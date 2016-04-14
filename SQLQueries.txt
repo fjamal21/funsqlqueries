@@ -59,5 +59,38 @@ a. SELECT R.ID FROM RESULTS R JOIN COURSE C ON C.CRSCODE = R.CRSCODE WHERE C.TYP
 b. SELECT X.IDFROM (SELECT ID, COUNT(*) NUMOFCOURSESTAKENFROM RESULTSGROUP BY ID) XJOIN (SELECT COUNT(*) AS COURSESAVAILABLEFROM COURSE YON X.NUMOFCOURSETAKEN = Y.COURSESAVAILABLE;    
 c. SELECT X.IDFROM (SELECT R.ID, COUNT(*) AS NUMBEROFSYSCCOURSESTAKENFROM RESULTS RJOIN COURSE CON R.CRSCODE = C.CRSCODEWHERE C.TYPE = 'SYSC'GROUP BY R.ID) XJOIN (SELECT COUNT(*) AS SYSCCLASSESAVAILABLEFROM COURSEWHERE TYPE= 'SYSC') YON X.NUMBEROFSYSCCOURSESTAKEN = Y.SYSCCLASSESAVAILABLEUNIONSELECT X.IDFROM (SELECT R.ID, COUNT(*) AS NUMBEROFTTMGCOURSESTAKENFROM RESULTS RJOIN COURSE CON R.CRSCODE = C.CRSCODEWHERE C.TYPE = 'TTMG'GROUP BY R.ID) XJOIN (SELECT COUNT(*) AS TTMGCLASSESAVAILABLEFROM COURSEWHERE TYPE = 'TTMG'
 d. SELECT X.NAMEFROM STUDENT XJOIN (SELECT R.IDFROM RESULTS RJOIN COURSE CON C.CRSCODE = R.CRSCODEWHERE C.TYPE = 'SYSC'AND C.INSTRUCTOR = 'SAMUEL ) Y ON X.ID = Y.ID;
-	 
 
+Question 17: Given a table events with the following structure:
+
+create table events (
+sensor_id integer not null,
+event_type integer not null,
+value integer not null,
+time timestamp unique not null
+);
+
+Write an SQL query that for each sensor and event type(sensor_id, event_type), returns the most recent value(in terms of time). The 
+table should be ordered by sensor_id(ascending order), event_type(in ascending order).
+
+For example, given the following data:
+------------------------------------------------------
+sensor_id event_type value    time 
+2             2       5    2014-02-13 12:42:00
+2             4      -42   2014-02-13 13:19:57
+2             2       2    2014-02-13 14:48:30
+3             2       7    2014-02-13 12:54:39
+2             3       54   2014-02-13 13:32:36
+------------------------------------------------------
+your query should return the following rowset:
+
+sensor_id  event_type value 
+   2         2          2 
+   2         3          54 
+   2         4          -42
+   3         2          7
+
+The names of the column in the rowset doesnt matter, but thir order does.
+
+Answer: 
+Select e.sensor_id, e.event_type, e.value FROM events e, (SELECT sensor_id, event-type, MAX(time) AS Time FROM events
+GROUP BY sensor_id, event_type) t WHERE e.sensor_id=t.sensor_id AND e.event_type=t.event_type AND e.time=t.time; 
